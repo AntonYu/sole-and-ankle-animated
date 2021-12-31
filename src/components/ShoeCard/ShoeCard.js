@@ -28,9 +28,9 @@ const ShoeCard = ({ slug, name, imageSrc, price, salePrice, releaseDate, numOfCo
             <Wrapper>
                 <ImageWrapper>
                     <Image alt="" src={imageSrc} />
-                    {variant === "on-sale" && <SaleFlag>Sale</SaleFlag>}
-                    {variant === "new-release" && <NewFlag>Just released!</NewFlag>}
                 </ImageWrapper>
+                {variant === "on-sale" && <SaleFlag>Sale</SaleFlag>}
+                {variant === "new-release" && <NewFlag>Just released!</NewFlag>}
                 <Spacer size={12} />
                 <Row>
                     <Name>{name}</Name>
@@ -57,10 +57,11 @@ const Link = styled.a`
     color: inherit;
 `;
 
-const Wrapper = styled.article``;
+const Wrapper = styled.article`
+    position: relative;
+`;
 
 const ImageWrapper = styled.div`
-    position: relative;
     overflow: hidden;
     border-radius: 16px 16px 4px 4px;
 `;
@@ -68,18 +69,21 @@ const ImageWrapper = styled.div`
 const Image = styled.img`
     width: 100%;
     display: block;
-    transform-origin: center 80%;
-    filter: grayscale(70%);
+    transform-origin: 50% 75%;
+    will-change: transform, filter;
 
-    &:hover {
+    ${Link}:hover &,
+    ${Link}:focus & {
         filter: grayscale(0);
     }
 
-    @media (prefers-reduced-motion: no-preference) {
-        transition: transform, filter 500ms;
-        &:hover {
+    @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+        filter: grayscale(70%);
+        transition: transform 600ms, filter 400ms;
+        ${Link}:hover &,
+        ${Link}:focus & {
             transform: scale(1.08);
-            transition: transform 150ms ease-in;
+            transition: transform 200ms ease-in;
         }
     }
 `;
