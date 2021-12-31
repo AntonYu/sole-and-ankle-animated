@@ -12,37 +12,40 @@ import { keyframes } from "styled-components";
 
 const MobileMenu = ({ isOpen, onDismiss }) => {
     return (
-        <Overlay isOpen={isOpen} onDismiss={onDismiss}>
+        <Wrapper isOpen={isOpen} onDismiss={onDismiss}>
+            <Backdrop />
             <Content aria-label="Menu">
-                <CloseButton onClick={onDismiss}>
-                    <Icon id="close" />
-                    <VisuallyHidden>Dismiss menu</VisuallyHidden>
-                </CloseButton>
-                <Filler />
-                <Nav>
-                    <NavLink href="/sale">Sale</NavLink>
-                    <NavLink href="/new">New&nbsp;Releases</NavLink>
-                    <NavLink href="/men">Men</NavLink>
-                    <NavLink href="/women">Women</NavLink>
-                    <NavLink href="/kids">Kids</NavLink>
-                    <NavLink href="/collections">Collections</NavLink>
-                </Nav>
-                <Footer>
-                    <SubLink href="/terms">Terms and Conditions</SubLink>
-                    <SubLink href="/privacy">Privacy Policy</SubLink>
-                    <SubLink href="/contact">Contact Us</SubLink>
-                </Footer>
+                <InnerWrapper>
+                    <CloseButton onClick={onDismiss}>
+                        <Icon id="close" />
+                        <VisuallyHidden>Dismiss menu</VisuallyHidden>
+                    </CloseButton>
+                    <Filler />
+                    <Nav>
+                        <NavLink href="/sale">Sale</NavLink>
+                        <NavLink href="/new">New&nbsp;Releases</NavLink>
+                        <NavLink href="/men">Men</NavLink>
+                        <NavLink href="/women">Women</NavLink>
+                        <NavLink href="/kids">Kids</NavLink>
+                        <NavLink href="/collections">Collections</NavLink>
+                    </Nav>
+                    <Footer>
+                        <SubLink href="/terms">Terms and Conditions</SubLink>
+                        <SubLink href="/privacy">Privacy Policy</SubLink>
+                        <SubLink href="/contact">Contact Us</SubLink>
+                    </Footer>
+                </InnerWrapper>
             </Content>
-        </Overlay>
+        </Wrapper>
     );
 };
 
-const opacityAnimation = keyframes`
+const fadeInAnimation = keyframes`
   from {
-    background: var(--color-backdrop-opacity);
+    opacity: 0;
   }
   to {
-    background: var(--color-backdrop);
+    opacity: 1;
   }
 `;
 
@@ -55,63 +58,65 @@ const contentAnimation = keyframes`
   }
 `;
 
-const fadeInAnimation = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-`;
-
-const Overlay = styled(DialogOverlay)`
+const Wrapper = styled(DialogOverlay)`
     --fade-in-animation-delay: 250ms;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: var(--color-backdrop);
+    background: transparent;
     display: flex;
     justify-content: flex-end;
+`;
 
-    animation: ${opacityAnimation} 400ms;
+const Backdrop = styled.div`
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: var(--color-backdrop);
+    animation: ${fadeInAnimation} 500ms;
 `;
 
 const Content = styled(DialogContent)`
+    --overfill: 16px;
+    position: relative;
     background: white;
-    width: 300px;
+    width: calc(300px + var(--overfill));
     height: 100%;
     padding: 24px 32px;
+    margin-right: calc(var(--overfill) * -1);
+
+    @media (prefers-reduced-motion: no-preference) {
+        animation: ${contentAnimation} 500ms both cubic-bezier(0, 0.6, 0.32, 1.06);
+        animation-delay: 200ms;
+    }
+`;
+
+const InnerWrapper = styled.div`
     display: flex;
     flex-direction: column;
+    height: 100%;
 
-    @media (preferce-reduced-motion: no-preference) {
-        animation: ${contentAnimation} 300ms linear;
+    @media (prefers-reduced-motion: no-preference) {
+        animation: ${fadeInAnimation} 600ms both;
+        animation-delay: 400ms;
     }
 `;
 
 const CloseButton = styled(UnstyledButton)`
     position: absolute;
     top: 10px;
-    right: 0;
+    right: var(--overfill);
     padding: 16px;
-
-    @media (preferce-reduced-motion: no-preference) {
-        animation: ${fadeInAnimation} 300ms both;
-        animation-delay: var(--fade-in-animation-delay);
-    }
 `;
 
 const Nav = styled.nav`
     display: flex;
     flex-direction: column;
     gap: 16px;
-
-    @media (preferce-reduced-motion: no-preference) {
-        animation: ${fadeInAnimation} 300ms both;
-        animation-delay: var(--fade-in-animation-delay);
-    }
 `;
 
 const NavLink = styled.a`
@@ -135,11 +140,6 @@ const Footer = styled.footer`
     flex-direction: column;
     gap: 14px;
     justify-content: flex-end;
-
-    @media (preferce-reduced-motion: no-preference) {
-        animation: ${fadeInAnimation} 300ms both;
-        animation-delay: var(--fade-in-animation-delay);
-    }
 `;
 
 const SubLink = styled.a`
